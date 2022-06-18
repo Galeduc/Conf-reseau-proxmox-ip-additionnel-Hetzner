@@ -1,0 +1,30 @@
+source /etc/network/interfaces.d/*
+
+auto lo
+iface lo inet loopback
+
+iface lo inet6 loopback
+
+iface enp0s31f6 inet manual # Rentrée l'interface réseau de votre dédié au lieu de enp0s31f6
+
+iface enp0s31f6 inet6 static  # De même
+    address 2a01:4f8:158:5083::2/64 # Rentrer votre subnets avec un /64
+    gateway fe80::1 # Rentrer le Gateway de l'ip de votre dédié
+
+# Création d'une interface réseau vmbr0
+
+auto vmbr0
+iface vmbr0 inet static
+    hwaddress 90:1b:0e:8f:c2:f7 # Rentrer votre addresse MAC
+    address 88.198.68.187 # Rentrer l'ip de votre dédié
+    gateway 88.198.66.129 # Rentrer le Gateway de votre ip de base
+    pointopoint 88.198.66.129 # gateway
+    netmask 255.255.255.255 # Netmask de votre ip de base
+    bridge_ports enp0s31f6 # Votre interface réseau
+    bridge_stp off
+    bridge_fd 1
+    up ip route add 88.198.69.785/32 dev vmbr0 #Rentrer vos ips additionel avec un /32
+    up ip route add 88.198.69.639/32 dev vmbr0
+    up ip route add 88.198.69.215/32 dev vmbr0
+
+    # Redemarer votre dédié et tout fonctionnera !
